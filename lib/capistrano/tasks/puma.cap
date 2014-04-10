@@ -94,6 +94,22 @@ namespace :puma do
         template_puma 'puma', fetch(:puma_conf), role
         info 'puma.rb generated'
       end
+      # create dirs for new deployments
+      unless test "[ -f #{Pathname.new(fetch(:puma_pid)).dirname}]"
+        warn 'pids dir does no exit'
+        system 'mkdir', '-p', Pathname.new(fetch(:puma_pid)).dirname
+        info 'pids dir created'
+      end
+      unless test "[ -f #{Pathname.new(fetch(:puma_bind)).dirname}]"
+        warn 'sockets dir does no exit'
+        system 'mkdir', '-p', Pathname.new(fetch(:puma_bind)).dirname
+        info 'sockets dir created'
+      end
+      unless test "[ -f #{Pathname.new(fetch(:puma_access_log)).dirname}]"
+        warn 'log dir does no exit'
+        system 'mkdir', '-p', Pathname.new(fetch(:puma_access_log)).dirname
+        info 'log dir created'
+      end
     end
   end
   after 'deploy:check', 'puma:check'
